@@ -12,6 +12,7 @@ import com.example.individualproject.data.model.Word
 import com.example.individualproject.data.repository.WordRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class AddEditWordViewModel(
@@ -23,8 +24,11 @@ class AddEditWordViewModel(
     val definition: MutableLiveData<String> = MutableLiveData("")
     val synonyms: MutableLiveData<String> = MutableLiveData("")
     val details: MutableLiveData<String> = MutableLiveData("")
-    val finish: MutableSharedFlow<Unit> = MutableSharedFlow()
+    private val _finish: MutableSharedFlow<Unit> = MutableSharedFlow()
+    val finish: SharedFlow<Unit> = _finish
     val showSnackbar: MutableLiveData<String> = MutableLiveData()
+
+    private fun triggerFinish() = viewModelScope.launch { _finish.emit(Unit) }
 
     fun getWordById(id: Int) {
         /*
@@ -44,7 +48,7 @@ class AddEditWordViewModel(
         } else {
             viewModelScope.launch(Dispatchers.IO) {
                 showSnackbar.postValue("An Unexpected Error Occurred.")
-                finish.emit(Unit)
+                triggerFinish()
             }
         }
     }
@@ -65,7 +69,7 @@ class AddEditWordViewModel(
                     ))
                     showSnackbar.postValue("Added Successfully.")
                 } catch (e: Exception) { showSnackbar.postValue(e.message) }
-                finish.emit(Unit)
+                triggerFinish()
             } else {
                 showSnackbar.postValue("Title and Definition cannot be empty!")
             }
@@ -99,11 +103,11 @@ class AddEditWordViewModel(
                         ))
                         showSnackbar.postValue("Updated Successfully.")
                     } catch (e: Exception) { showSnackbar.postValue(e.message) }
-                    finish.emit(Unit)
+                    triggerFinish()
                 }
             } else {
                 showSnackbar.postValue("An Unexpected Error Occurred.")
-                finish.emit(Unit)
+                triggerFinish()
             }
         }
     }

@@ -12,6 +12,7 @@ import com.example.individualproject.data.model.Word
 import com.example.individualproject.data.repository.WordRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 class ViewWordViewModel(
@@ -19,8 +20,11 @@ class ViewWordViewModel(
 ): ViewModel() {
     private val _word: MutableLiveData<Word> = MutableLiveData()
     val word: LiveData<Word> = _word
-    val finish: MutableSharedFlow<Unit> = MutableSharedFlow()
+    private val _finish: MutableSharedFlow<Unit> = MutableSharedFlow()
+    val finish: SharedFlow<Unit> = _finish
     val showSnackbar: MutableLiveData<String> = MutableLiveData()
+
+    private fun triggerFinish() = viewModelScope.launch { _finish.emit(Unit) }
 
     fun getWordById(id: Int) {
         /*
@@ -40,7 +44,7 @@ class ViewWordViewModel(
                 repo.deleteWord(word.value!!)
                 showSnackbar.postValue("Deleted Successfully.")
             } catch (e: Exception) { showSnackbar.postValue(e.message) }
-            finish.emit(Unit)
+            triggerFinish()
         }
     }
 
@@ -55,7 +59,7 @@ class ViewWordViewModel(
                 repo.updateWord(completedWord)
                 showSnackbar.postValue("Word Completed.")
             } catch (e: Exception) { showSnackbar.postValue(e.message) }
-            finish.emit(Unit)
+            triggerFinish()
         }
     }
 

@@ -17,6 +17,7 @@ import com.example.individualproject.databinding.LayoutFilterViewBinding
 import com.example.individualproject.ui.adapter.TabAdapter
 import com.example.individualproject.ui.viewmodel.ContainerViewModel
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class ContainerFragment : Fragment() {
@@ -79,9 +80,10 @@ class ContainerFragment : Fragment() {
                 mrbDesc.isChecked = !mrbAsc.isChecked
                 btnConfirm.setOnClickListener {
                     lifecycleScope.launch {
-                        sortType.value = if(mrbTitle.isChecked) "title" else "dateCreated"
-                        sortOrder.value = if(mrbAsc.isChecked) "ASC" else "DESC"
-                        finish.emit(Unit)
+                        sortType.postValue(if(mrbTitle.isChecked) "title" else "dateCreated")
+                        sortOrder.postValue(if(mrbAsc.isChecked) "ASC" else "DESC")
+                        delay(200)
+                        triggerFinish()
                     }
                     dialogBox.dismiss()
                 }
