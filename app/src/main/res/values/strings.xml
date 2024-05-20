@@ -23,6 +23,7 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="header">%s Word?</string>
+    <string name="tab_text">%s Words</string>
     <string name="body">This action cannot be undone!</string>
     <string name="sort_order">Sort Order</string>
     <string name="ascending">Ascending</string>

@@ -61,8 +61,8 @@ class ContainerFragment : Fragment() {
         // This sets up the Tab Layout Names for easier use.
         TabLayoutMediator(binding.tlTabs, binding.vpTabs) { tab, position ->
             when(position) {
-                0 -> tab.text = "New Words"
-                1 -> tab.text = "Completed Words"
+                0 -> tab.text = getString(R.string.tab_text, "New")
+                1 -> tab.text = getString(R.string.tab_text, "Completed")
             }
         }.attach()
     }
